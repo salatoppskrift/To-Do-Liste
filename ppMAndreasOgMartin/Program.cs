@@ -8,58 +8,113 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("En to-do liste! What to do, what to do...");
-            Console.WriteLine("a) ...\nb) ...\nc) ...\n\nLegg til valg!");
-
             List<Task> tasks = new List<Task>();
+            Console.WriteLine("En to-do liste! What to do, what to do...");
 
-            addTask();
-
-            var input = Console.ReadKey().KeyChar;
-
-
-
-            if (input == 'a')
+            while (true)
             {
                 Console.Clear();
-                Console.WriteLine("Legg til en oppgave du skal gjøre!");
+                PrintTasks(tasks);
+                Console.WriteLine("a) Legg til oppgave\nb) Se oppgave beskrivelse \nc) Slett en oppgave\n\nLegg til valg!");
 
-                tasks.Add(addTask());
-            } else if(input == 'b')
+                var input = Console.ReadKey().KeyChar;
+
+                if (Char.IsDigit(input))
+                {
+                    int selection = LessThanZeroOrBiggerThanTasks(input, tasks);
+                    if (selection == -1)
+                    {
+                        Console.WriteLine("Invalid task");
+                    }
+                    else
+                    {
+                        tasks[selection].ToggleComplete();
+                    }
+                    continue;
+                }
+
+                if (input == 'a')
+                {
+                    Console.Clear();
+                    Console.WriteLine("Legg til en oppgave du skal gjøre!");
+
+                    tasks.Add(addTask());
+                }
+                else if (input == 'b')
+                {
+                    Console.Clear();
+                    PrintTasks(tasks);
+                    Console.WriteLine("Se en oppgaves beskrivelse");
+                    int selection = LessThanZeroOrBiggerThanTasks(Console.ReadKey().KeyChar, tasks);
+                    if (selection == -1)
+                    {
+                        Console.WriteLine("Invalid task");
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine(tasks[selection].GetDescription());
+                    }
+
+                    Console.ReadLine();
+                }
+                else if (input == 'c')
+                {
+                    Console.Clear();
+                    PrintTasks(tasks);
+                    Console.WriteLine("Slett oppgave");
+                    int selection = LessThanZeroOrBiggerThanTasks(Console.ReadKey().KeyChar, tasks);
+                    if (selection == -1)
+                    {
+                        Console.WriteLine("Invalid task");
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        string name = tasks[selection].GetName();
+                        tasks.RemoveAt(selection);
+                        Console.WriteLine($"Slettet oppgave \"{name}\"");
+                    }
+
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Det der gav *null* mening.");
+                }
+            }
+        }
+
+        static void PrintTasks(List<Task> tasks)
+        {
+            for (int i = 0; i < tasks.Count(); i++)
             {
-                Console.Clear();
-                Console.WriteLine("Legg til en oppgave du skal gjøre!");
+                Console.WriteLine(i + ". [" + (tasks[i].GetCompleted() ? "x" : " ") + "] " + tasks[i].GetName());
+            }
+        }
 
-                string nextInput = Console.ReadLine();
-
-            } else if(input == 'c')
+        static int LessThanZeroOrBiggerThanTasks(char input, List<Task> tasks)
+        {
+            int selection = input - '0';
+            if (selection < 0 || selection >= tasks.Count())
             {
-                Console.Clear();
-                Console.WriteLine("Legg til en oppgave du skal gjøre!");
-
-                string nextInput = Console.ReadLine();
-            } else
-            {
-                Console.Clear();
-                Console.WriteLine("Det der gav *null* mening.");
+                return -1;
             }
 
-
-
-
-
-
-            Console.ReadLine();
+            return selection;
         }
 
         static Task addTask()
         {
+            Console.WriteLine("Oppgave navn:");
             string nameInput = Console.ReadLine();
+            Console.WriteLine("Oppgave beskrivelse:");
             string descriptionInput = Console.ReadLine();
 
             Console.WriteLine("Oppgavenavn: " + nameInput);
             Console.WriteLine("Beskrivelse: " + descriptionInput);
-            
+
             return new Task(nameInput, descriptionInput);
         }
     }

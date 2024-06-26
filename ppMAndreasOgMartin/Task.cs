@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ppMAndreasOgMartin
+﻿namespace ppMAndreasOgMartin
 {
     internal class Task
     {
@@ -17,16 +11,15 @@ namespace ppMAndreasOgMartin
             _taskName = Name;
             _taskDescription = Description;
             _taskAskStatus = false;
-
         }
 
+        public bool GetCompleted() => _taskAskStatus;
+				public string GetName() => _taskName;
+				public string GetDescription() => _taskDescription;
 
-
-
-        /*
-        public void deleteTask()
-        {
-
-        }*/
+				public void ToggleComplete()
+				{
+						_taskAskStatus = !_taskAskStatus;
+				}
     }
 }
